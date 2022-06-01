@@ -26,7 +26,6 @@ class Tile(pygame.sprite.Sprite):
 
         for img in self.graphics.keys():
             full_path = character_path + img
-            print(full_path)
             self.graphics[img] = import_folder(full_path)
 
     def update(self, x_shift):
