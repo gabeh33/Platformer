@@ -6,8 +6,8 @@ basic_level = [
     '                        ',
     '            XXXXXXX     ',
     '  XXX                  X',
-    '            XXX         ',
-    '   P  XXXXXX         XX ',
+    '           XXXX         ',
+    '   P  XXXXXX  X      XX ',
     ' XXXXX         XXXX     ',
     ' XXXXX         XXXX     ',
     ' XXXXX         XXXX     ',
@@ -20,10 +20,10 @@ level_1 = [
     '                                   ',
     '                                   ',
     '                                   ',
-    '       GX                          ',
+    '       XX    G                     ',
     ' P       XX            XX          ',
     'XX                                 ',
-    'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
+    '                                   ',
 ]
 
 tile_size = 64

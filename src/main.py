@@ -15,7 +15,12 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            level1.moving_button = True
+        elif event.type == pygame.MOUSEBUTTONUP:
+            level1.moving_button = False
+
     screen.fill('black')
-    level1.run()
+    level.run()
     pygame.display.update()
     clock.tick(60)

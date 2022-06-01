@@ -1,13 +1,33 @@
 import pygame
-
+from support import import_folder
+from settings import tile_size
 
 class Tile(pygame.sprite.Sprite):
     def __init__(self, pos, size, is_goal=False):
         super().__init__()
-        self.image = pygame.Surface((size, size))
-        self.image.fill('grey') if not is_goal else self.image.fill('green')
+        self.graphics = {}
+        self.import_character_assets()
+
+        if not is_goal:
+            # self.image = pygame.Surface((size, size))
+            self.image = self.graphics['grass'][0]
+        else:
+            self.image = self.graphics['goal'][0]
+
+        self.image = pygame.transform.scale(self.image, (tile_size, tile_size))
+        # self.image.fill('grey') if not is_goal else self.image.fill('green')
         self.rect = self.image.get_rect(topleft=pos)
         self.isGoal = is_goal
+
+    def import_character_assets(self):
+        character_path = '../res/main/Terrain/'  #  /res/main/Main Characters/Virtual Guy/
+        self.graphics = {'grass': [],
+                         'goal': []}
+
+        for img in self.graphics.keys():
+            full_path = character_path + img
+            print(full_path)
+            self.graphics[img] = import_folder(full_path)
 
     def update(self, x_shift):
         """
@@ -23,7 +43,12 @@ class MoveableButton(pygame.sprite.Sprite):
         self.image = pygame.Surface((width, height))
         self.image.fill((255, 0, 255))
         self.rect = self.image.get_rect(center=pos)
+        self.placed = False
 
-    def update(self, x_pos_center, y_pos_center):
-        self.rect.centerx = x_pos_center
-        self.rect.centery = y_pos_center
+    def update(self, x_shift):
+        if self.placed:
+            self.rect.x += x_shift
+
+    def update_pos(self, pos):
+        self.rect.centerx = pos[0]
+        self.rect.centery = pos[1]
