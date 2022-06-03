@@ -1,5 +1,5 @@
 from os import walk
-from settings import screen_width, screen_height
+from settings import *
 import pygame.image
 
 
@@ -18,7 +18,7 @@ def import_folder(path):
 
 def draw_background(screen, vertical_offset):
     vertical_offset = int(vertical_offset)
-    img_path = '../res/main/Background/Brown.png'
+    img_path = background_image
     img = pygame.image.load(img_path)
     screen.fill('black')
 

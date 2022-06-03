@@ -1,0 +1,7 @@
+TODO LIST
+1. Create more levels that demonstrate the functionality
+2. Make the GUI look better
+3. Make it so the moveable buttons can be replaced, such as having a square
+in the GUI that the old button used to be at so a user can click it and have the button return
+4. Make it so if the player is on top of a button, that button cannot be moved
+5. Maybe make it so that the player can only jump when standing on top of a block?

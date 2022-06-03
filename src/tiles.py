@@ -2,6 +2,7 @@ import pygame
 from support import import_folder
 from settings import tile_size
 
+
 class Tile(pygame.sprite.Sprite):
     def __init__(self, pos, size, is_goal=False):
         super().__init__()
@@ -20,7 +21,7 @@ class Tile(pygame.sprite.Sprite):
         self.isGoal = is_goal
 
     def import_character_assets(self):
-        character_path = '../res/main/Terrain/'  #  /res/main/Main Characters/Virtual Guy/
+        character_path = '../res/main/Terrain/'  # /res/main/Main Characters/Virtual Guy/
         self.graphics = {'grass': [],
                          'goal': []}
 
