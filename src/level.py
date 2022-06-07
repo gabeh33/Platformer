@@ -4,10 +4,13 @@ tiles on the screen, and GUI information. Takes in level information from
 settings.py to create the level
 """
 import enum
+
+import pygame
+
 from settings import *
 from tiles import *
 from player import Player
-from support import import_folder
+from support import import_folder, draw_background
 
 
 class Level:
@@ -34,6 +37,8 @@ class Level:
         self.graphics = {}
         self.init_buttons()
 
+        self.vertical_offset = 0
+
         self.init_level(level_data)
 
     def init_level(self, layout):
@@ -49,17 +54,18 @@ class Level:
                 x = col_index * tile_size
                 y = row_index * tile_size
                 if cell == 'X':
-                    tile = Tile((x, y), tile_size)
+                    tile = Tile((x, y))
                     self.tiles.add(tile)
                 elif cell == 'P':
                     player = Player((x, y))
                     self.player.add(player)
                 elif cell == 'G':
-                    goal = Tile((x, y), tile_size, True)
+                    goal = Tile((x, y), 'goal', True)
                     self.tiles.add(goal)
 
     def restart_level(self):
         self.init_buttons()
+        self.moving_button = False
         self.init_level(self.level_data)
 
     def scroll_x(self):
@@ -208,7 +214,17 @@ class Level:
         # the mouse position
         self.mouse_pos = pygame.mouse.get_pos()
         for i, sprite in enumerate(self.moveable_buttons.sprites()):
+            # Making it so the user cannot have the buttons move the character
+            expand_factor = 2
+            player_rect_expanded = self.player.sprite.rect.inflate(expand_factor, expand_factor)
+            sprite_rect_expanded = sprite.rect.inflate(expand_factor, expand_factor)
+
             if sprite.rect.collidepoint(self.mouse_pos):
+                if sprite_rect_expanded.colliderect(player_rect_expanded):
+                    # self.manage_gui()
+                    self.moving_button = False
+                    self.prev_clicked_button = None
+                    # return
                 self.manage_gui(self.mouse_pos, button_list[i])
                 self.prev_clicked_button = button_list[i]
                 sprite.placed = True
@@ -216,27 +232,12 @@ class Level:
             else:
                 self.manage_gui(self.mouse_pos, self.prev_clicked_button)
 
-    def draw_gui_moveable_buttons_old(self):
-        button_list = [ButtonType.Left, ButtonType.Space, ButtonType.Right]
-        if self.moving_button:
-            self.mouse_pos = pygame.mouse.get_pos()
-        if self.mouse_pos:
-            for i, sprite in enumerate(self.moveable_buttons.sprites()):
-                if sprite.rect.collidepoint(self.mouse_pos):
-                    self.manage_gui(self.mouse_pos, button_list[i])
-                    self.mouse_pos = None
-                    self.prev_clicked_button = button_list[i]
-                    sprite.placed = True
-                    return
-            self.manage_gui()
-        else:
-            self.manage_gui()
-
     def check_player_won_died_restart(self):
         if self.level_won:
+            pass
             # Will change later, for now just restart the level
-            self.level_won = False
-            self.restart_level()
+            # self.level_won = False
+            # self.restart_level()
 
         if self.player.sprite.rect.centery > 615:
             self.restart_level()
@@ -244,7 +245,19 @@ class Level:
         if self.player.sprite.restart_level:
             self.restart_level()
 
+    def handle_mouse_button_down(self):
+        for sprite in self.moveable_buttons.sprites():
+            if sprite.rect.collidepoint(pygame.mouse.get_pos()):
+                self.moving_button = not self.moving_button
+
+    def handle_mouse_button_up(self):
+        pass
+
     def run(self):
+        # Background
+        draw_background(self.display_surface, self.vertical_offset)
+        self.vertical_offset = self.vertical_offset + background_scroll_speed if self.vertical_offset < 64 else 0
+
         # Level Tiles
         self.tiles.update(self.world_shift)
         self.tiles.draw(self.display_surface)
@@ -262,6 +275,8 @@ class Level:
         # Checking if a player has died or won the level
         self.check_player_won_died_restart()
         self.scroll_x()
+
+
 
 
 class ButtonType(enum.Enum):

@@ -4,19 +4,14 @@ from settings import tile_size
 
 
 class Tile(pygame.sprite.Sprite):
-    def __init__(self, pos, size, is_goal=False):
+    def __init__(self, pos, tile_type='grass', is_goal=False):
         super().__init__()
         self.graphics = {}
         self.import_character_assets()
 
-        if not is_goal:
-            # self.image = pygame.Surface((size, size))
-            self.image = self.graphics['grass'][0]
-        else:
-            self.image = self.graphics['goal'][0]
+        self.image = self.graphics[tile_type][0]
 
-        self.image = pygame.transform.scale(self.image, (tile_size, tile_size))
-        # self.image.fill('grey') if not is_goal else self.image.fill('green')
+        # self.image = pygame.transform.scale(self.image, (tile_size, tile_size))
         self.rect = self.image.get_rect(topleft=pos)
         self.isGoal = is_goal
 

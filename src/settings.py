@@ -26,6 +26,18 @@ level_1 = [
     '                                   ',
 ]
 
+level_2 = [
+    '                                       ',
+    '                                       ',
+    '  P                                    ',
+    '  X                                    ',
+    '           X                           ',
+    '                                       ',
+    '                                       ',
+    '                                       ',
+    '                                       ',
+]
+
 tile_size = 64
 # screen_width = len(basic_level[0]) * tile_size
 screen_width = 1200

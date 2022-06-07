@@ -12,6 +12,8 @@ class Player(pygame.sprite.Sprite):
         self.import_character_assets()
         self.frame_index = 0
         self.animation_speed = 0.15
+        self.animation_string = 'idle'
+        self.flip_x = False
         
         self.image = self.animations['idle'][self.frame_index]
         self.image = pygame.transform.scale(self.image, (54, 63))
@@ -35,7 +37,7 @@ class Player(pygame.sprite.Sprite):
         """
         character_path = character_info
         self.animations = {'idle': [],
-                           'run': [],
+                           'run': [],  # 24x28
                            'jump': [],
                            'fall': []}
 
@@ -47,13 +49,19 @@ class Player(pygame.sprite.Sprite):
         """
         Animates the player by cycling through image files
         """
-        animation = self.animations['idle']
-        self.frame_index += self.animation_speed
+        # TODO Readjust the idle frames to be 24x28 so everything can be scaled the same
+        animation = self.animations[self.animation_string]
 
+        self.frame_index += self.animation_speed
         if self.frame_index >= len(animation):
             self.frame_index = 0
 
         self.image = animation[int(self.frame_index)]
+
+        self.image = pygame.transform.scale(self.image, (54, 63))
+
+        if self.flip_x:
+            self.image = pygame.transform.flip(self.image, True, False)
 
     def get_input(self):
         """
@@ -67,13 +75,22 @@ class Player(pygame.sprite.Sprite):
                 self.direction.x = 1
             else:
                 self.direction.x = 0
+            self.animation_string = 'run'
+            self.flip_x = False
         elif keys[pygame.K_LEFT] or keys[pygame.K_a]:
             if self.can_move_left:
                 self.direction.x = -1
             else:
                 self.direction.x = 0
+            self.animation_string = 'run'
+            self.flip_x = True
         else:
             self.direction.x = 0
+            self.animation_string = 'idle'
+        if self.direction.y > 0 and self.direction.y != 0.8:
+            self.animation_string = 'fall'
+        elif self.direction.y < 0:
+            self.animation_string = 'jump'
 
         if keys[pygame.K_SPACE] or keys[pygame.K_UP] or keys[pygame.K_w]:
             if (self.last_time_jumped is None or time.time() - self.last_time_jumped > jump_cooldown) and self.can_jump:
