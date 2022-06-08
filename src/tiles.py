@@ -47,3 +47,17 @@ class MoveableButton(pygame.sprite.Sprite):
     def update_pos(self, pos):
         self.rect.centerx = pos[0]
         self.rect.centery = pos[1]
+
+    def set_image(self, image, size):
+        self.image = image
+        self.scale_image(size)
+
+    def scale_image(self, new_size):
+        self.image = pygame.transform.scale(self.image, new_size)
+
+
+class DefaultButton(MoveableButton):
+    def __init__(self, pos, width, height, image=None):
+        super().__init__(pos, width, height)
+        if image is not None:
+            self.image = image
