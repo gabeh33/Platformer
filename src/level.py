@@ -155,17 +155,11 @@ class Level:
         self.moveable_buttons = pygame.sprite.Group()
         self.background_moveable_buttons = pygame.sprite.Group()
         self.import_character_assets()
-        # Constants to change button layout
-        left_right_center_offset = 150
-        distance_from_screen_height = 84
-        square_size = 64
-        dimensions = (square_size, square_size)
-        space_button_width = 128
+        # Constants to change button layout are in settings.py
 
         # Left Button
         # Set the default value, change it if specified in the arguments
-        left_pos = (screen_width / 2 - left_right_center_offset,
-                    screen_height - distance_from_screen_height)
+
         self.left_button = MoveableButton(left_pos, square_size, square_size)
         self.left_button.set_image(self.graphics['gui'][0], dimensions)
 
@@ -173,7 +167,7 @@ class Level:
         self.left_background_button.set_image(self.graphics['gui_background'][0], dimensions)
 
         # Space Button
-        space_pos = (screen_width / 2, screen_height - distance_from_screen_height)
+
         self.space_button = MoveableButton(space_pos, space_button_width, square_size)
         self.space_button.set_image(self.graphics['gui'][1], (space_button_width, square_size))
 
@@ -181,7 +175,7 @@ class Level:
         self.space_background_button.set_image(self.graphics['gui_background'][2], (space_button_width, square_size))
 
         # Right Button
-        right_pos = (screen_width / 2 + left_right_center_offset, screen_height - distance_from_screen_height)
+
         self.right_button = MoveableButton(right_pos, square_size, square_size)
         self.right_button.set_image(self.graphics['gui'][2], dimensions)
 
@@ -195,6 +189,17 @@ class Level:
         self.background_moveable_buttons.add(self.left_background_button)
         self.background_moveable_buttons.add(self.space_background_button)
         self.background_moveable_buttons.add(self.right_background_image)
+
+    def replace_moveable_button(self, index):
+        pos_list = [left_pos, space_pos, right_pos]
+        self.moveable_buttons.sprites()[index].update_pos(pos_list[index])
+        self.moveable_buttons.sprites()[index].placed = False
+        if index == 0:
+            self.player.sprite.can_move_left = True
+        elif index == 1:
+            self.player.sprite.can_jump = True
+        elif index == 2:
+            self.player.sprite.can_move_right = True
 
     def manage_gui(self, mouse_pos=None, button=None):
         """
@@ -269,6 +274,10 @@ class Level:
         for sprite in self.moveable_buttons.sprites():
             if sprite.rect.collidepoint(pygame.mouse.get_pos()):
                 self.moving_button = not self.moving_button
+                return
+        for i, sprite in enumerate(self.background_moveable_buttons.sprites()):
+            if sprite.rect.collidepoint(pygame.mouse.get_pos()):
+                self.replace_moveable_button(i)
 
     def handle_mouse_button_up(self):
         if self.moving_button:
